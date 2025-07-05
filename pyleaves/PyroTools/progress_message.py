@@ -51,6 +51,66 @@ async def pyro_progress(
             print(e)
 
 
+# Modified progress function for my need
+async def pyro_progress_modified(
+    current,
+    total,
+    ud_type,
+    message,
+    start,
+    template=PROGRESS_BAR,
+    finished_str = '●',
+    unfinished_str = '○',
+    markup=None,
+    bar_length=20,
+):
+    now = time.time()
+    diff = now - start
+    
+    # Update every 5 seconds OR at completion (change 5.0 to adjust interval)
+    if not (round(diff % 5.00) == 0 or current == total):
+        return
 
+    # Rest of the progress logic remains identical...
+    percentage = current * 100 / total
+    speed = current / diff if diff > 0 else 0
+    elapsed_time = round(diff) * 1000
+    time_to_completion = round((total - current) / speed) * 1000 if speed > 0 else 0
 
+    # Status messages (optimized for 5s updates)
+    if percentage < 10:
+        status = ("🛸", "Initializing...")
+    elif percentage < 25:
+        status = ("🐢", "Still a long way to go...")
+    elif percentage < 50:
+        status = ("🚶", "Making good progress!")
+    elif percentage < 75:
+        status = ("🏃", "Moving fast!")
+    elif percentage < 90:
+        status = ("⚡", "Almost there!")
+    else:
+        status = ("🎯", "Finishing up...")
+
+    # Progress bar and message formatting...
+    progress = (finished_str * math.floor(percentage / (100/bar_length))).ljust(bar_length, unfinished_str)
+    
+    tmp = template.format(
+        bar=progress,
+        percentage=percentage,
+        current=humanbytes(current),
+        total=humanbytes(total),
+        speed=humanbytes(speed),
+        elapsed=TimeFormatter(milliseconds=elapsed_time),
+        eta=TimeFormatter(milliseconds=time_to_completion),
+        status_emoji=status[0],
+        status_message=status[1]
+    )
+
+    try:
+        await message.edit(
+            text=f"{ud_type}\n\n{tmp}",
+            reply_markup=markup
+        )
+    except Exception as e:
+        print(f"Progress update skipped (flood control): {e}")
 

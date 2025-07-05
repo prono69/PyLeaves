@@ -16,7 +16,7 @@ with open("README.md", encoding="utf-8") as f:
 setuptools.setup(
     name="PyLeaves",
     version=version,
-    author="MrMKN",
+    author="prono69",
     long_description_content_type="text/markdown",
     long_description=readme,
     license='GNU General Public License v3.0',
