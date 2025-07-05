@@ -59,10 +59,10 @@ async def pyro_progress_modified(
     message,
     start,
     template=PROGRESS_BAR,
-    finished_str = '●',
-    unfinished_str = '○',
+    finished_str = '⬢',
+    unfinished_str = '⬡',
     markup=None,
-    bar_length=20,
+    bar_length=15,
 ):
     now = time.time()
     diff = now - start
@@ -108,7 +108,7 @@ async def pyro_progress_modified(
 
     try:
         await message.edit(
-            text=f"{ud_type}\n\n{tmp}",
+            text=f"{ud_type}\n{tmp}",
             reply_markup=markup
         )
     except Exception as e:
