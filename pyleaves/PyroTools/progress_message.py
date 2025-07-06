@@ -108,7 +108,7 @@ async def pyro_progress_modified(
 
     try:
         await message.edit(
-            text=f"{ud_type}\n{tmp}",
+            text=f"{ud_type}\n\n{tmp}",
             reply_markup=markup
         )
     except Exception as e:
